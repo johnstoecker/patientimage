@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.openmrs.module.patientimage.servlet.PatientImageService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.patientimage.PatientImage;
+import org.openmrs.module.patientimage.PatientImageService;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -32,8 +34,22 @@ public class PatientImageResource implements Resource {
 	 * @throws IOException
 	 */
 	public byte[] retrieve(int patientId, int pageId) throws IOException {
-		InputStream in = new FileInputStream(PatientImageService.getImagePath(patientId, pageId));
+		PatientImageService pis = Context.getService(PatientImageService.class);
+		InputStream in = new FileInputStream(pis.getPath(patientId, pageId));
 		return IOUtils.toByteArray(in);
+	}
+	
+	public void create(int patientId, byte[] imageData) throws IOException {
+		PatientImageService pis = Context.getService(PatientImageService.class);
+		pis.createImage(patientId, imageData);
+	}
+	
+	public void delete(int patientId, int pageId) throws IOException {
+		PatientImageService pis = Context.getService(PatientImageService.class);
+		PatientImage p = new PatientImage();
+		p.setPatientId(patientId);
+		p.setId(pageId);
+		pis.deleteImage(p);
 	}
 	
 	@Override

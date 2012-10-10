@@ -74,4 +74,5 @@ public class PatientImageResourceTest {
 		}
 		catch (IOException e) {}
 	}
+	
 }

@@ -14,6 +14,7 @@
 package org.openmrs.module.patientimage.rest.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,7 +49,8 @@ public class PatientImageController extends BaseRestController {
 	@RequestMapping(value = "/{patientid}/{pageid}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> retrieve(@PathVariable("patientid") String patientIdStr,
 	        @PathVariable("pageid") String pageIdStr, HttpServletRequest request) throws IOException {
-		//RequestContext context = RestUtil.getRequestContext(request);
+		Context.openSession();
+		RequestContext context = RestUtil.getRequestContext(request);
 		PatientImageResource r = Context.getService(RestService.class).getResource(PatientImageResource.class);
 		int patientId = Integer.parseInt(patientIdStr);
 		int pageId = Integer.parseInt(pageIdStr);
@@ -63,6 +65,29 @@ public class PatientImageController extends BaseRestController {
 		catch (IOException e) {
 			status = HttpStatus.NOT_FOUND;
 		}
+		Context.closeSession();
 		return new ResponseEntity<byte[]>(imageData, headers, status);
+	}
+	
+	@RequestMapping(value = "/{patientid}", method = RequestMethod.POST)
+	public void create(@PathVariable("patientid") String patientIdStr, HttpServletRequest request) throws IOException {
+		RestUtil.getRequestContext(request);
+		PatientImageResource r = Context.getService(RestService.class).getResource(PatientImageResource.class);
+		int patientId = Integer.parseInt(patientIdStr);
+		byte[] imgData = new byte[request.getContentLength()];
+		InputStream in = request.getInputStream();
+		int offset = 0;
+		in.read(imgData, 0, request.getContentLength());
+		r.create(patientId, imgData);
+	}
+	
+	@RequestMapping(value = "/{patientid}/{pageid}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable("patientid") String patientIdStr, @PathVariable("pageid") String pageIdStr,
+	        HttpServletRequest request) throws IOException {
+		RestUtil.getRequestContext(request);
+		PatientImageResource r = Context.getService(RestService.class).getResource(PatientImageResource.class);
+		int patientId = Integer.parseInt(patientIdStr);
+		int pageId = Integer.parseInt(pageIdStr);
+		r.delete(patientId, pageId);
 	}
 }
