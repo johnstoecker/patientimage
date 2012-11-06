@@ -23,6 +23,7 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,9 +36,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping(value = "/rest/v1/patientimage/patientimage")
-public class PatientImageController extends BaseRestController {
+public class PatientImageController extends BaseCrudController<PatientImageResource> {
 	
-	/**
+    /**
 	 * @param patientid int
 	 * @param pageid int
 	 * @return ResponseEntity<byte[]> containing image binary data with JPEG
